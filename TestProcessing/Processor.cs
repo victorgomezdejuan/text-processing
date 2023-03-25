@@ -1,6 +1,9 @@
 ﻿namespace TestProcessing;
+
 public class Processor
 {
+    public const float WORD_READING_RATE_PER_MINUTE = 200.0F;
+
     public string Analyse(string input)
     {
         IEnumerable<string> words = GetWords(input);
@@ -51,5 +54,12 @@ public class Processor
         }
         result += $"\r\nThe text has in total {wordCount} words";
         return result;
+    }
+
+    public int GetReadingTimeInMinutes(string input)
+    {
+        float rawReadingTime = GetWords(input).Count() / WORD_READING_RATE_PER_MINUTE;
+
+        return (int)Math.Round(rawReadingTime, 0, MidpointRounding.AwayFromZero);
     }
 }

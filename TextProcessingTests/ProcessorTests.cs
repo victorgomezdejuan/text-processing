@@ -2,7 +2,7 @@ using TestProcessing;
 
 namespace TextProcessingTests;
 
-public class Tests
+public class ProcessorTests
 {
     private Processor processor;
 
@@ -55,5 +55,58 @@ public class Tests
                 "The text has in total 21 words"
             )
         );
+    }
+
+    [Test]
+    public void GetOutputWithEmptyInput()
+    {
+        string input = string.Empty;
+        string result = processor.Analyse(input);
+        Assert.That(result,
+        Is.EqualTo(
+                "Those are the top 10 words used:\r\n\r\n\r\n" +
+                "The text has in total 0 words"
+            )
+        );
+    }
+
+    [Test]
+    public void GetReadingTime_ExactlyOneMinute()
+    {
+        string input = string.Concat(Enumerable.Repeat("word ", (int)Processor.WORD_READING_RATE_PER_MINUTE));
+
+        int result = processor.GetReadingTimeInMinutes(input);
+
+        Assert.That(result, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void GetReadingTime_ZeroWords()
+    {
+        string input = string.Empty;
+
+        int result = processor.GetReadingTimeInMinutes(input);
+
+        Assert.That(result, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void GetReadingTime_RoundingDown()
+    {
+        string input = string.Concat(Enumerable.Repeat("word ", 622));
+
+        int result = processor.GetReadingTimeInMinutes(input);
+
+        Assert.That(result, Is.EqualTo(3));
+    }
+
+    [Test]
+    public void GetReadingTime_RoundingUp()
+    {
+        string input = string.Concat(Enumerable.Repeat("word ", 738));
+
+        int result = processor.GetReadingTimeInMinutes(input);
+
+        Assert.That(result, Is.EqualTo(4));
     }
 }
